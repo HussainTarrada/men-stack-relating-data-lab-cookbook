@@ -9,6 +9,10 @@ require('dotenv').config()
 const mongoose = require("mongoose")
 const authController = require('./controllers/auth.js');
 const foodsController = require('./controllers/foods.js');
+const session = require('express-session');
+const isSignedIn = require('./middleware/is-signed-in.js');
+const passUserToView = require('./middleware/pass-user-to-view.js');
+const User = require('./models/user.js')
 
 // =======================
 // 2. MIDDLEWARE
@@ -22,12 +26,28 @@ app.use(morgan("dev")); // Logs the requests in the terminal
 mongoose.connect(process.env.MONGODB_URI)
 .then(()=>{console.log("Connected to DATABSE")})
 .catch(()=>{console.log("ERROR CONNECTING TO DB OMAR")})
+
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
+// app.use(morgan('dev'));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+)
+
 // =======================
 // 4. ROUTES
 // =======================
 
-
+app.use(passUserToView);
 app.use('/auth', authController);
+app.use(isSignedIn);
+app.get('/', async(req, res) => {
+    res.render('index.ejs');
+  }); 
 app.use('/users/:userId/foods', foodsController);
 
 
