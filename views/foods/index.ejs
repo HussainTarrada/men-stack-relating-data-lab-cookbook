@@ -11,13 +11,28 @@
     <button>
         <a href="/users/<%= user._id %>/foods/new">add food</a>
     </button>
+    <br>
+  
 
     <ul>
+      <% if(pantries){ %>
         <% pantries.forEach(pantry => { %>
-            <li><%= pantry.name %></li>
+            <li>
+              <form action="/users/<%= user._id %>/foods/<%= pantry._id %>?_method=DELETE" method="POST">
+                <%= pantry.name %>
+                <button type="submit">delete</button>
+              </form>
+              <button>
+                <a href="/users/<%= user._id %>/foods/<%= pantry._id %>/edit">edit</a>
+            </button>
+            </li>
             <br>
             <% }) %>
+          <% } else{ %>
+            <p>There are no items in this pantry</p>
+             <% } %>
     </ul>
+   
 
   </body>
 </html>

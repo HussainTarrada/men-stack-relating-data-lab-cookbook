@@ -13,6 +13,7 @@ const session = require('express-session');
 const isSignedIn = require('./middleware/is-signed-in.js');
 const passUserToView = require('./middleware/pass-user-to-view.js');
 const User = require('./models/user.js')
+const usersController = require('./controllers/users.js');
 
 // =======================
 // 2. MIDDLEWARE
@@ -49,6 +50,7 @@ app.get('/', async(req, res) => {
     res.render('index.ejs');
   }); 
 app.use('/users/:userId/foods', foodsController);
+app.use('/users', usersController);
 
 
 // =======================
